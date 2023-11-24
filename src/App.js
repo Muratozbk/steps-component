@@ -22,37 +22,21 @@ function Counter() {
   const date = new Date('november 23 2023');
   date.setDate(date.getDate() + count)
 
-  function handleUp() {
-    setStep(step + 1);
-  }
-  function handleDown() {
-    if (step > 1) {
-      setStep(step - 1);
-    }
-  }
-
-  function handleCDown() {
-    setCount(count - step);
-  }
-  function handleCUp() {
-    setCount(count + step);
-  }
-
   return (
     <div className="steps" >
       <div className="top" style={{ display: 'flex' }}>
         <button className="minus"
-          onClick={handleDown}>-</button>
+          onClick={() => step > 1 && setStep(step - 1)}>-</button>
         <h3>Step: {step}  </h3>
         <button className="plus"
-          onClick={handleUp}>+</button>
+          onClick={() => setStep((s) => s + 1)}>+</button>
       </div>
 
       <div className="bottom" style={{ display: 'flex', marginTop: '1rem' }}>
         <button className="plus"
-          onClick={handleCDown}>-</button>
+          onClick={() => setCount(count - step)}>-</button>
         <h3>Count: {count}  </h3>
-        <button onClick={handleCUp} className="plus">+</button>
+        <button onClick={() => setCount(c => c + step)} className="plus">+</button>
       </div>
 
       <p>
