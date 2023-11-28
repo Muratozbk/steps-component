@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: true },
-  { id: 3, description: "Charger", quantity: 1, packed: false }
+  { id: 2, description: "Socks", quantity: 6, packed: false },
+  { id: 3, description: "Charger", quantity: 1, packed: true }
 ];
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
       <Form onAddItems={handleAddItems} />
       <PackingList items={items} onDeleteItem={handleDeleteItem}
         onToggleItems={handleToggleItem} />
-      <Stats />
+      <Stats items={items} />
       {/* <FlashCards />
       <Counter /> */}
     </div>
@@ -52,7 +52,6 @@ function Form({ onAddItems }) {
     if (!description) return;
 
     const newItem = { description, quantity, packed: false, id: Date.now() }
-    console.log(newItem);
 
     onAddItems(newItem);
     setDescription('');
@@ -101,6 +100,7 @@ function Item({ item, onDeleteItem, onToggleItems }) {
     <li >
       <input type="checkbox"
         value={item.packed}
+        checked={item.packed}
         onChange={() => onToggleItems(item.id)} />
       <span style={item.packed ? { textDecoration: 'line-through' } : {}}>
         {item.description} {item.quantity}
@@ -110,16 +110,31 @@ function Item({ item, onDeleteItem, onToggleItems }) {
   )
 };
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length) return (
+    <footer className="stats">
+      <em>Start adding some items to your packing list 🚀</em>
+    </footer>
+  );
+
+  const numItems = items.length;
+  const numPackedItems = items.filter(item => item.packed).length;
+  const percentage = Math.round(numPackedItems / numItems * 100);
+
   return (
     <footer className='stats'>
       <em>
-        💼 You have X items on your list, and you already packed X (X%)
+        {percentage === 100 ?
+          'You packed everything! Ready to go ✈'
+          : `💼 You have ${numItems} items on your list, and you already packed ${numPackedItems} (${percentage}%)`}
       </em>
     </footer>
   )
 };
 
+export default App
+
+/*
 function Counter() {
   const [step, setStep] = useState(1);
   const [count, setCount] = useState(0);
@@ -212,5 +227,4 @@ function FlashCards() {
     ))}
   </div>;
 }
-
-export default App
+*/
