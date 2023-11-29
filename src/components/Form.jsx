@@ -7,11 +7,9 @@ export default function Form({ onAddItems }) {
     function handleSubmit(e) {
         e.preventDefault();
         // Date.now().toString().slice(-7);
-
         if (!description) return;
 
         const newItem = { description, quantity, packed: false, id: Date.now() }
-
         onAddItems(newItem);
         setDescription('');
         setQuantity(1);
@@ -37,3 +35,4 @@ export default function Form({ onAddItems }) {
         </form>
     )
 };
+
