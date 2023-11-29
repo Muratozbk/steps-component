@@ -80,17 +80,37 @@ function Form({ onAddItems }) {
 };
 
 function PackingList({ items, onDeleteItem, onToggleItems }) {
+  const [sortBy, setSortBy] = useState('input');
+
+  let sortedItems;
+
+  if (sortBy === 'input') sortedItems = items;
+
+  if (sortBy === 'description') sortedItems = items.slice()
+    .sort((a, b) => a.description.localeCompare(b.description));
+
+  if (sortBy === 'packed') sortedItems = items.slice()
+    .sort((a, b) => Number(a.packed) - Number(b.packed))
 
   return (
     <div className="list">
       <ul >
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <Item item={item}
             onDeleteItem={onDeleteItem}
             onToggleItems={onToggleItems}
             key={item.id} />
         ))}
       </ul>
+
+      <div className="actions">
+        <select value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}>
+          <option value="input">Sort by input order</option>
+          <option value="description">Sort by description</option>
+          <option value="packed">Sort by packed status</option>
+        </select>
+      </div>
     </div>
   )
 };
@@ -111,13 +131,14 @@ function Item({ item, onDeleteItem, onToggleItems }) {
 };
 
 function Stats({ items }) {
-  if (!items.length) return (
+  const numItems = items.length;
+
+  if (!numItems) return (
     <footer className="stats">
       <em>Start adding some items to your packing list 🚀</em>
     </footer>
   );
 
-  const numItems = items.length;
   const numPackedItems = items.filter(item => item.packed).length;
   const percentage = Math.round(numPackedItems / numItems * 100);
 
@@ -125,8 +146,11 @@ function Stats({ items }) {
     <footer className='stats'>
       <em>
         {percentage === 100 ?
-          'You packed everything! Ready to go ✈'
-          : `💼 You have ${numItems} items on your list, and you already packed ${numPackedItems} (${percentage}%)`}
+          '🧳 You packed everything! Ready to go ✈'
+          : percentage === 0 ?
+            `📃 You have ${numItems} items on your list, start to pack your items 🧳`
+            :
+            `💼 You have ${numItems} items on your list and you packed ${numPackedItems} ${numPackedItems > 1 ? 'items' : 'item'} (${percentage}%)`}
       </em>
     </footer>
   )
